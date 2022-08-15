@@ -1,0 +1,13 @@
+# environment 
+benv
+.ipynb_checkpoints
+
+*.swp
+__pycache__
+
+.env
+
+# temp
+notebook
+
+

@@ -1,0 +1,4 @@
+python-binance
+
+# environment
+python-dotenv==0.20.0
