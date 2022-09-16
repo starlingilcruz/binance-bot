@@ -1,4 +1,6 @@
 python-binance
-
+binance-connector
 # environment
 python-dotenv==0.20.0
+
+numpy
