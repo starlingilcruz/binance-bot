@@ -3,4 +3,4 @@ binance-connector
 # environment
 python-dotenv==0.20.0
 
-numpy
+numpy==1.21.5

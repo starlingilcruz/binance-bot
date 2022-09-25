@@ -14,7 +14,7 @@ def apply_intervals_filter(
             return on_failure_cb(target)
         raise "The value entered is invalid"
 
-    return target
+    return target, target
 
 
 def find_valid_range(value, portion = 0):

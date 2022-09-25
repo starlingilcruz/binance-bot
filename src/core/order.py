@@ -95,9 +95,5 @@ class Order:
         pass
 
     def on_order_created(self, order):
-        # call storage service and pass the resulting order.
-        # storage service should get the proper information to store and analyse.
-        print("ORDER HOOK")
-
         print('0rder: {}'.format(order))
         

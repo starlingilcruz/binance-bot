@@ -15,6 +15,10 @@ class Client(Spot):
     from .market import create_market_order
     from .market import create_order_limit
     from .market import get_avg_price
+    from .market import get_ticker_price
+
+    # Wallet
+    from .wallet import coins_info
 
     def __init__(self, *args, **kwargs):
         if kwargs.pop('testnet', None):
