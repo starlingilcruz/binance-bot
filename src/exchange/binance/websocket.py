@@ -12,3 +12,9 @@ ws_client.book_ticker(
     id=1,
     callback=message_handler,
 )
+
+def renovate_connection(timeout):
+    while True:
+      sleep(timeout)
+
+

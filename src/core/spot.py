@@ -1,5 +1,3 @@
-from email.quoprimime import quote
-import json
 from decimal import Decimal
 
 from .order import Order
@@ -47,22 +45,28 @@ class SpotMarket:
             price = Decimal(price)
 
         # Getting quantity
-        # Qty is the portion that represents the quote_amount regarding the base.
+        # Qty is the portion that represents the quote_amount regarding the price.
         if not quantity:
             quantity = quote_amount / price
         else:
             quantity = Decimal(quantity)
         
+        # We perform the transaction applying the earn margin to the current price.
+        # When buying the earn margin is (optional).
+        # When selling always apply the earn margin.
         if side == "BUY":
             if transact_now:
+                # Do the transaction at current price (without earn margin)
                 performance_f = price
             else:
+                # Apply earn margin
                 performance_f = price - (price * Decimal(earn_margin))
         elif side == "SELL":
+            # Apply earn margin
             performance_f = price + (price * Decimal(earn_margin))
-        performance_p = earn_margin * 100
 
         print("******** SPOT INFORMATION *********")
+        performance_p = earn_margin * 100
         print("Market Price: {}".format(price))
         print("Market Quantity: {}".format(quantity))
         print("Performance Fiat: {}".format(performance_f))
@@ -71,9 +75,10 @@ class SpotMarket:
         print("******** END SPOT INFORMATION *********")
         
         print(performance_f)
-        print(price + (price * Decimal(earn_margin)))
+        # print(price + (price * Decimal(earn_margin)))
        
         info = self.client.exchange_info(symbol).get('symbols')[0]
+        
         rules = Rule(symbol_info=info)
 
         return self.order.create_limit_order(

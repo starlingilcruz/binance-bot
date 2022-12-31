@@ -19,6 +19,8 @@ class Client(Spot):
 
     # Wallet
     from .wallet import coins_info
+    from .wallet import get_account
+    from .wallet import get_asset_balance
 
     def __init__(self, *args, **kwargs):
         if kwargs.pop('testnet', None):
@@ -29,7 +31,6 @@ class Client(Spot):
         else:
             print("**** Initializing Client **** \n\n")
         super().__init__(*args, **kwargs)
-
 
     
     

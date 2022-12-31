@@ -4,3 +4,9 @@ binance-connector
 python-dotenv==0.20.0
 
 numpy==1.21.5
+
+# database
+pymongo==4.3.3
+
+# event emitter port from Nodejs EventEmitter 2 approach (https://github.com/asyncly/EventEmitter2)
+pymitter==0.4.0
