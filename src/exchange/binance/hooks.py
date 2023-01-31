@@ -31,16 +31,16 @@ def transaction_side(current_side):
 
 
 def handle_opposite_order(client, collection, data):
-    client = ExchangeClient(key=api_key, secret=api_secret, testnet=False)
-    spot_market = SpotMarket(client=client)
-
-    if not data.get('processing') and not data.get('filled'):
-        print('order:{0} was placed and waiting to be filled'.format(data.get('orderId')))
-        return 
-
     if not data:
         print('no order in collection')
         return 
+
+    if not data.get('filled'):
+        print('order:{0} was placed and waiting to be filled'.format(data.get('orderId')))
+        return 
+
+    client = ExchangeClient(key=api_key, secret=api_secret, testnet=False)
+    spot_market = SpotMarket(client=client)
 
     operation_id = data.get('id')
 
@@ -106,7 +106,7 @@ def handle_opposite_order(client, collection, data):
 event = EventEmitter()
 
 @event.on(EventType.PLACE_ORDER.value)
-def on_place_counterpart_order(collection, orders):
+def on_place_counterpart_order(instance, collection, orders, **kwargs):
     print("**** on_place_counterpart_order *****")
 
     print(orders[0])

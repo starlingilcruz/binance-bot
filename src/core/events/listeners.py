@@ -1,12 +1,10 @@
 # from core.database.collections import OrderCollection
 from core.enums import EventType
-import copy
 
 from . import EventEmitter
 
 event = EventEmitter()
 
-# order_collection = OrderCollection()
 
 # TODO track global events here
 
@@ -25,10 +23,9 @@ def on_order_completed(result):
     pass
 
 @event.on(EventType.PREPARE_PLACE_ORDER.value)
-def on_prepare_place_order(collection, orders):
+def on_prepare_place_order(instance, collection, orders, **kwargs):
     print("*** CORE: received prepare place order event")
-    # event.emit("TEST", collection)
-
+    
     orders_copy = list(orders)
     order_count = len(orders_copy)
 
@@ -51,11 +48,15 @@ def on_prepare_place_order(collection, orders):
 
     if modified_count == 0:
         # TODO move this process to corresponding loop
-        event.emit(EventType.PLACE_ORDER.value, collection, orders_copy)
-    # no other counterpart order will be placed
+        # TODO orders are not marked as processing = True in the list
+        event.emit(
+            EventType.PLACE_ORDER.value, 
+            instance=instance,
+            collection=collection, 
+            orders=orders_copy)
 
 @event.on(EventType.PLACE_ORDER.value)
-def on_place_counterpart_order(collection, orders):
+def on_place_counterpart_order(instance, collection, orders):
     print("*** CORE: received place counterpart order event")
     order_count = len(list(orders))
 
@@ -65,5 +66,3 @@ def on_place_counterpart_order(collection, orders):
         return
 
     print("*** Core: Evited - placing counterpart order ***")
-
-    # no other counterpart order will be placed

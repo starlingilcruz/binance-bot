@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from core.database.connection import get_database
 
 database = get_database('default')
@@ -22,10 +24,12 @@ class AbstractCollection:
         return self.collection.find(kwargs)
 
     def insert_one(self, document, **kwargs):
+        document.update({ 'created_at': datetime.utcnow() })
         for k, v in kwargs.items():
             document.update({k:v})
         return self.collection.insert_one(document)
 
+    # TODO upsert_many
     def insert_many(self, documents, **kwargs):
         # Insert if not exists
         id_key = kwargs.get('id_key', None)
@@ -41,6 +45,9 @@ class AbstractCollection:
                     )
             return inserted
 
+        documents = [
+            d.update({ 'created_at': datetime.utcnow() }) for d in documents
+        ]
         return self.collection.insert_many(documents)
     
     def update_one(self, query, document):
@@ -49,16 +56,16 @@ class AbstractCollection:
     def update_many(self, documents, values, **kwargs):
         id_key = kwargs.get('id_key', None)
 
-        if not id_key:
-            raise Exception("No id_key provided")
+        # TODO raise custom exception
+        assert id_key, "No id_key provided"
 
-        result = []
-
+        results = []
         for document in documents:
-            args = {}
-            args[id_key] = document.get(id_key)
-            print(args)
-            print(values)
-            result.append(self.update_one(query=args, document=values))
-        return result
+            _id = document.get(id_key)
+            # TODO raise custom exception
+            assert _id, "Invalid id_key"
+            query = {}
+            query[id_key] = _id
+            results.append(self.update_one(query=query, document=values))
+        return results
         # return self.collection.update_many(query, {'$set': documents})

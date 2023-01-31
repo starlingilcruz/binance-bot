@@ -17,7 +17,7 @@ from exchange.binance.client import Client as ExchangeClient
 
 import os
 from dotenv import load_dotenv
-from runner import init_runner, every
+from runner import init_runner
 
 load_dotenv() # take environment from .env
 
@@ -52,48 +52,33 @@ async def main():
         6. tbd.
     """
 
-    symbol = "BTCUSDT"
-
-    client = ExchangeClient(key=api_key, secret=api_secret, testnet=False)
-
+    client = ExchangeClient(api_key=api_key, api_secret=api_secret, testnet=False)
     order_collection = OrderCollection()
-    
-    scalper = Scalper(client=client, collection=order_collection)
+    scalper = Scalper(
+        client=client, 
+        collection=order_collection,
+        symbol="BTCUSDT"
+    )
     
     def every_five_s():
 
-        """
-            TODO listen for order proceed webook instead. 
-            request may be limited
-        """
-        print("5 SEC")
+        # TODO listen for order proceed webook instead. request may be limited
 
-        # Stratergies will be iteratin by the runner, and the configuration is loaded per individual class instance
+        # strategy - attempts to make a profit out of small price movements within exchange market
         scalper()
 
-        # Find open orders
-        orders = client.get_open_orders(symbol)
+        print("Instance len *********** {}".format(len(Scalper.get_instances())))
 
-        if not orders:
-            print("NO ORDERS FOUND")
+        from core.database.collections.system import ResourceCollection
 
-            order_collection.mark_processing_as_completed()
-            # the order is not filled yet, so we store it as filled false.
-            # by default a new order should always created with filled false value.
+        r = ResourceCollection()
 
-            # find all filled false orders and mark as filled
-            # TODO when cancelling an order through the exchange is not being determitated here
+        for a in list(r.find({})):
+            print(a)
 
-            # TODO implement query cache in underlying function
-            return 
-
-
-        # if orders are found in place, then we store it.
-        order_collection.insert_many(documents=orders, id_key='orderId')
-
+    # this can be remove once using the exchange order proceesed webhook
     runner_loop = asyncio.new_event_loop()
     await init_runner(runner_loop, every_five_s)
-
 
 
 if __name__ == "__main__":

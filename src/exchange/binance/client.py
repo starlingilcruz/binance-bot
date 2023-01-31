@@ -10,17 +10,11 @@ testnet_url = 'https://testnet.binance.vision'
 class Client(Spot):
 
     from .account import account_balance
-
     # Market
-    from .market import create_market_order
-    from .market import create_order_limit
-    from .market import get_avg_price
-    from .market import get_ticker_price
-
+    from .market import (create_market_order, create_order_limit,
+                         get_avg_price, get_ticker_price)
     # Wallet
-    from .wallet import coins_info
-    from .wallet import get_account
-    from .wallet import get_asset_balance
+    from .wallet import coins_info, get_account, get_asset_balance
 
     def __init__(self, *args, **kwargs):
         if kwargs.pop('testnet', None):
@@ -30,7 +24,5 @@ class Client(Spot):
             print("**** Initializing in TEST mode **** \n\n")
         else:
             print("**** Initializing Client **** \n\n")
+        print(kwargs)
         super().__init__(*args, **kwargs)
-
-    
-    
