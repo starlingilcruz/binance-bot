@@ -65,16 +65,16 @@ async def main():
         # TODO listen for order proceed webook instead. request may be limited
 
         # strategy - attempts to make a profit out of small price movements within exchange market
-        scalper()
-
+        # scalper()
+        Scalper.run_all()
         print("Instance len *********** {}".format(len(Scalper.get_instances())))
 
-        from core.database.collections.system import ResourceCollection
+        # from core.database.collections.system import ResourceCollection
 
-        r = ResourceCollection()
+        # r = ResourceCollection()
 
-        for a in list(r.find({})):
-            print(a)
+        # for a in list(r.find({})):
+        #     print(a)
 
     # this can be remove once using the exchange order proceesed webhook
     runner_loop = asyncio.new_event_loop()

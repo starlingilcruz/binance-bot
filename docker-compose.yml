@@ -16,7 +16,7 @@ services:
   exchange-core:
     container_name: "exchange-core"
     build: .
-    command: python main.py && tail -f /dev/null
+    # command: python main.py && tail -f /dev/null
     env_file:
         - .env
     ports:

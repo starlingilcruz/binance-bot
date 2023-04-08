@@ -1,12 +1,39 @@
 # from core.database.collections import OrderCollection
+from core.database.collections.system import ResourceCollection
 from core.enums import EventType
 
 from . import EventEmitter
 
 event = EventEmitter()
+resource_collection = ResourceCollection()
 
 
 # TODO track global events here
+
+count = 0
+
+@event.on(EventType.TESTING.value)
+def on_testing(instance, **kwargs):
+    print("ON TESTING")
+    print(instance.monitor())
+
+    global count
+    print(count)
+    print(instance.valid)
+
+    if count == 1:
+        instance.valid = False
+    count+=1
+
+# system
+@event.on(EventType.RESOURCE_ATTACH.value)
+def on_new_resource_created(resource_id, type):
+    resource_collection.add(id=resource_id, type=type)
+
+@event.on(EventType.RESOURCE_DETACH.value)
+def on_resource_deleted(resource_id):
+    resource_collection.destroy(id=resource_id)
+
 
 @event.on(EventType.ORDER_FILLED.value)
 def on_order_filled(result):

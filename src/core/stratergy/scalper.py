@@ -2,11 +2,11 @@ from core.enums import EventType
 from core.events import EventEmitter
 from core.misc import reserved_names
 from core.trade import TradeType
-from .interface import Stratergy
+from .base import Stratergy
 
-global_config = {
+default_config = {
     #'max_chunk_size': 10, # amount is divided by this number
-    'fraction': 10, # amount is divided by this number
+    'fraction': 1, # amount is divided by this number
     'earn_margin': 0.02,
 
     'logger': lambda x: print(
@@ -21,18 +21,18 @@ def get_config(instance, collection, event):
     # Configurations can be created and customized dinamically.
 
     return {
-        'non_filled_orders': collection.non_filled,
-        'scalp_filter': lambda x: instance.scalp_filter(x),
+        'get_non_filled_orders': collection.non_filled,
+        'builtin-filter': lambda x: instance.filter(x),
         'prepare_place_order': lambda x: event.emit(
             EventType.PREPARE_PLACE_ORDER.value, 
             instance=instance, 
             collection=collection, 
             orders=x,
-            **global_config
-        ),  
+            **default_config
+        ),
 
         # No overridable configuration
-        **global_config,
+        **default_config,
     }
 
 
@@ -44,6 +44,8 @@ class Scalper(Stratergy):
 
     trade_type = TradeType.Scalping
 
+    valid = True
+
     def __init__(self, symbol, client, collection):
         super().__init__(symbol, client, collection)
 
@@ -51,7 +53,7 @@ class Scalper(Stratergy):
             instance=self, collection=collection, event=self.event
         )
 
-    def scalp_filter(self, transactions):
+    def filter(self, transactions):
         """ 
             Receives list of transactions/orders to determinated base on 
             conditions, if next transaction can be executed.
@@ -61,9 +63,16 @@ class Scalper(Stratergy):
 
     def monitor(self):
         """ Return dict with properties """
+        print("MONITORING")
+
+    # def load_config(self):
+    #     pass
+
+    def pre_execute(self):
+        # config = self.load_config()
         pass
 
-    def execute_action(self):
+    def execute(self):
         # Attempts to make small profitable movements within the market
 
         # Scalping should prioritize making hight volumes off small profit.
@@ -80,13 +89,22 @@ class Scalper(Stratergy):
         # 2. pass transactions to scalp filter - this identifies if the next transaction
         # can be executed 
         # 3. depending on earn marging defined - execute counterpart trade operation
-
+        
         default_operation = {
-            'fetch': self.config.get('non_filled_orders', lambda x: x),
-            'filter': self.config.get('scalp_filter', lambda x: x),
+            'fetch': self.config.get('get_non_filled_orders', lambda x: x),
+            'filter': self.config.get('builtin-filter', lambda x: x),
             'submit': self.config.get('prepare_place_order', lambda x: x),
             # 'logger': self.config.get('logger', lambda x: x)
         }
+
+        # default_operation = {
+        #     'testing': lambda x: self.event.emit(
+        #         EventType.TESTING.value, 
+        #         instance=self, 
+        #         **default_config
+        #     )
+        #     # 'logger': self.config.get('logger', lambda x: x)
+        # }
         
         operations = [
             default_operation,
@@ -103,6 +121,8 @@ class Scalper(Stratergy):
 
 
     def sync_from_exchange(self):
+        super().sync_from_exchange()
+        
         # TODO fetch for every symbol selected which is stored in the database
 
         # Look for opens orders in place
