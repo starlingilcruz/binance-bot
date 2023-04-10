@@ -28,9 +28,9 @@ class Order:
 
             order_qty = heigher_qty
         
-        print("PLACE MARKET ORDER SELL")
-        print('Symbol: {}'.format(symbol))
-        print('Qty: {}'.format(order_qty))
+        # print("PLACE MARKET ORDER SELL")
+        # print('Symbol: {}'.format(symbol))
+        # print('Qty: {}'.format(order_qty))
 
         order = self.client.create_order_market_sell(
             symbol=symbol, quantity=order_qty
@@ -62,21 +62,21 @@ class Order:
             assert isinstance(rules, Rule), "Rules should be instance of Rule"
 
             if side == 'SELL':
-                # we want to sell at hiegher price prosible
+                # we want to sell at hiegher price posible
                 _, quantity = rules.get_min_max_quantity(target_quantity)
                 _, price = rules.get_min_max_price(target_price)
             elif side == 'BUY':
-                # we want to buy at lower price prosible
+                # we want to buy at lower price posible
                 quantity, _ = rules.get_min_max_quantity(target_quantity)
                 price, _ = rules.get_min_max_price(target_price)
             else:
                 # TODO throw exception instead
                 raise "Invalid order operation. Param 'side' is invalid."
 
-        print("\n PLACE LIMIT ORDER {} \n ".format(side))
-        print('Symbol: {}'.format(symbol))
-        print('Qty: {}'.format(quantity))
-        print('Price: {}'.format(price))
+        # print("\n PLACE LIMIT ORDER {} \n ".format(side))
+        # print('Symbol: {}'.format(symbol))
+        # print('Qty: {}'.format(quantity))
+        # print('Price: {}'.format(price))
 
         order = self.client.create_order_limit(
             symbol=symbol,

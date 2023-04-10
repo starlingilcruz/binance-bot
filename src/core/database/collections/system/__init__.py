@@ -1,1 +1,1 @@
-from .resource import ResourceType, ResourceStatus, ResourceCollection
+from .resource import ResourceStatus, ResourceCollection

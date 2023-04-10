@@ -18,3 +18,6 @@ the operation.
 
 Is a term used to denote the "skimming" of small profits on a regular basis, by going in and out of positions several times per day.
 
+## Scalper process
+
+

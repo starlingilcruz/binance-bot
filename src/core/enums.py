@@ -30,4 +30,10 @@ class EventType(Enum):
     EXCHANGE_500 = 'EXCHANGE_500'
 
     ERROR_CATCH = 'ERROR_CATCH'
+
+    # System core
+    RESOURCE_ATTACH = 'RESOURCE_ATTACH'
+    RESOURCE_DETACH = 'RESOURCE_DETACH'
+
+    TESTING = 'TESTING'
     

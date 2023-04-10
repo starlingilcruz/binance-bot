@@ -1,4 +1,4 @@
-python-binance
+python-binance==1.0.16
 binance-connector
 # environment
 python-dotenv==0.20.0
@@ -10,3 +10,7 @@ pymongo==4.3.3
 
 # event emitter port from Nodejs EventEmitter 2 approach (https://github.com/asyncly/EventEmitter2)
 pymitter==0.4.0
+
+# api
+fastapi==0.89.1
+uvicorn==0.20.0
